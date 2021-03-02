@@ -1,14 +1,16 @@
 package de.patkab.shoppinglist.model;
 
 import java.io.Serializable;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import java.util.Objects;
+import javax.persistence.*;
 
 @Entity
+@Table(name="entry")
 public class ShoppingListEntry {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 
@@ -32,5 +34,18 @@ public class ShoppingListEntry {
 
     public String toString() {
         return "[" + getId() + "," + getName() + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ShoppingListEntry that = (ShoppingListEntry) o;
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
