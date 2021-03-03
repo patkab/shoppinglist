@@ -17,7 +17,7 @@ Create database und user, if they don't exist yet:
 
     mysql -u root -p
     create database shoppinglist;
-    grant all on shoppinglist.* to 'patric'@'%' identified by 'number77' with grant option;
+    grant all on shoppinglist.* to 'patric'@'%' identified by 'pwd' with grant option;
     exit
 
 Exit container:
