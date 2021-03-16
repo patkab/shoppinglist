@@ -4,10 +4,13 @@ import java.io.Serializable;
 
 import javax.annotation.Resource;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.transaction.UserTransaction;
 
 import de.patkab.shoppinglist.model.User;
@@ -34,15 +37,47 @@ public class RegisterController implements Serializable {
         this.user = user;
     }
 
+    public User getUserByName(String name)
+    {
+        TypedQuery<User> query =
+                em.createQuery(
+                        "FROM " + User.class.getSimpleName() + " u WHERE u.name = :name",
+                        User.class);
+        query.setParameter("name", name);
+        return query.getSingleResult();
+    }
+
     public String persist() {
         try {
             ut.begin();
-            em.persist(user);
+            FacesMessage msg = null;
+            if (getUserByName(user.getName()) != null)
+            {
+                 msg = new FacesMessage("User already exists!");
+                FacesContext
+                        .getCurrentInstance()
+                        .addMessage("name", msg);
+            }
+            else
+            {
+                em.persist(user);
+                msg = new FacesMessage("Successfully registered!");
+                FacesContext
+                        .getCurrentInstance()
+                        .addMessage("registerForm", msg);
+            }
             ut.commit();
         } catch (Exception e) {
             e.printStackTrace();
-            return "failure";
+            FacesContext
+                    .getCurrentInstance()
+                    .addMessage(
+                            "registerForm",
+                            new FacesMessage(
+                                    FacesMessage.SEVERITY_ERROR,
+                                    e.getMessage(),
+                                    e.getCause().getMessage()));
         }
-        return "success";
+        return "/register.xhtml";
     }
 }

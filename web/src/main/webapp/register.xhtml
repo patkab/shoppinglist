@@ -13,16 +13,23 @@
         content="text/html; charset=UTF-8" />
 </h:head>
 <h:body>
-    <h:form>
-        <h:panelGrid columns="2">
+    <h:messages globalOnly="true"/>
+    <h:form id="registerForm" prependId="false">
+        <h:message for="registerForm" showSummary="true"/>
+        <h:panelGrid columns="3">
             <f:facet name="header">
-                <h:outputText value="Registrieren"/>
+                <h:outputText value="Register"/>
             </f:facet>
-            <h:outputLabel value="Benutzername:" />
-            <h:inputText value="#{registerController.user.name}"/>
-            <h:outputLabel value="Kennwort:" />
-            <h:inputSecret value="#{registerController.user.password}"/>
-            <h:commandButton action="#{registerController.persist}" value="Registrieren"/>
+            <h:outputLabel value="Username:" />
+            <h:inputText id="name" value="#{registerController.user.name}">
+            </h:inputText>
+            <h:message for="name"/>
+            <h:outputLabel value="Password:" />
+            <h:inputSecret id="password" value="#{registerController.user.password}">
+            </h:inputSecret>
+            <h:message for="password"/>
+            <h:commandButton id="register" action="#{registerController.persist}" value="Register"/>
+            <h:message for="register"/>
         </h:panelGrid>
     </h:form>
 </h:body>
