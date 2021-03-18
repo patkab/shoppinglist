@@ -56,7 +56,7 @@ public class RegisterController implements Serializable {
         }
         else
         {
-            return users.get(1);
+            return users.get(0);
         }
     }
 
