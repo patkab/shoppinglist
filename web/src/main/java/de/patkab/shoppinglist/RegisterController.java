@@ -1,6 +1,7 @@
 package de.patkab.shoppinglist;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.enterprise.context.RequestScoped;
@@ -12,6 +13,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.transaction.UserTransaction;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.patkab.shoppinglist.model.User;
 
@@ -19,7 +22,9 @@ import de.patkab.shoppinglist.model.User;
 @RequestScoped
 public class RegisterController implements Serializable {
     private static final long serialVersionUID = 1L;
-    
+
+    private static final Logger logger = LogManager.getLogger(RegisterController.class);
+
     @PersistenceContext
     private EntityManager em;
 
@@ -44,7 +49,15 @@ public class RegisterController implements Serializable {
                         "FROM " + User.class.getSimpleName() + " u WHERE u.name = :name",
                         User.class);
         query.setParameter("name", name);
-        return query.getSingleResult();
+        List<User> users = query.getResultList();
+        if (users.isEmpty())
+        {
+            return null;
+        }
+        else
+        {
+            return users.get(1);
+        }
     }
 
     public String persist() {
@@ -53,7 +66,7 @@ public class RegisterController implements Serializable {
             FacesMessage msg = null;
             if (getUserByName(user.getName()) != null)
             {
-                 msg = new FacesMessage("User already exists!");
+                msg = new FacesMessage("User already exists!");
                 FacesContext
                         .getCurrentInstance()
                         .addMessage("name", msg);
@@ -68,7 +81,8 @@ public class RegisterController implements Serializable {
             }
             ut.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            //TODO check if logging is displayed
+            logger.error(e.getMessage());
             FacesContext
                     .getCurrentInstance()
                     .addMessage(
@@ -78,6 +92,6 @@ public class RegisterController implements Serializable {
                                     e.getMessage(),
                                     e.getCause().getMessage()));
         }
-        return "/register.xhtml";
+        return "register";
     }
 }
