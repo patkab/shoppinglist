@@ -12,6 +12,7 @@
     <modules>
         <module>web</module>
         <module>ear</module>
+        <module>ejb</module>
     </modules>
 
     <properties>
